@@ -6,12 +6,16 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fisi.unsm.api.entity.Registros;
+import fisi.unsm.api.security.JwtUtil;
+import fisi.unsm.api.service.IRegistroService;
 
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +34,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/restful")
 public class RegistrosController {
     @Autowired
-    private IRegistrosService serviceRegistros;
+    private IRegistroService serviceRegistros;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -47,7 +51,7 @@ public class RegistrosController {
     public Registros guardar(@RequestBody Registros registro) {
         registro.setCliente_id(null);
         String claveOriginal = registro.getEmail() + registro.getNombres() + registro.getApellidos();
-        registro.setLlave_secreta(claveOriginal);
+        registro.setLlave_secreta(passwordEncoder.encode(claveOriginal));
         serviceRegistros.guardar(registro);
         return registro;
     }
@@ -60,7 +64,7 @@ public class RegistrosController {
 
     @GetMapping("/registros/{id}")
     public Optional<Registros> buscarId(@PathVariable("id") Integer id) {
-        return serviceRegistros.buscarId(id);
+        return serviceRegistros.buscarPorId(id);
     }
     
     @DeleteMapping("/registros/{id}")
@@ -81,10 +85,9 @@ public class RegistrosController {
             .findFirst();
             if(user.isPresent() && passwordEncoder.matches(llaveSecreta,user.get().getLlave_secreta())){
                     String token = jwtUtil.generarToken(clienteId);
-                    return ResponseEntity.ok()Collections.singletonMap("token", token);
+                    return ResponseEntity.ok(Collections.singletonMap("token", token));
             }
-
-        return;
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("credenciales incorrectas");
 
     }
     
