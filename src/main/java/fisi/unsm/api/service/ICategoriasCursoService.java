@@ -1,0 +1,26 @@
+package fisi.unsm.api.service;
+
+import java.util.List;
+import java.util.Optional;
+
+
+import fisi.unsm.api.entity.CategoriasCurso;
+
+public interface ICategoriasCursoService {
+    // CRUD para el API de Clientes
+    
+    List<CategoriasCurso> buscarTodos();
+    // Método para listar todos los elementos de Clientes
+
+    void guardar(CategoriasCurso categoriaCurso);
+    // Método para guardar Clientes
+
+    void modificar(CategoriasCurso categoriaCurso);
+    // Método para modificar Clientes
+
+    Optional<CategoriasCurso> buscarId(Integer id);
+    // Método para listar un cliente 
+
+    void eliminar(Integer id);
+    // Método para eliminar un cliente
+}
