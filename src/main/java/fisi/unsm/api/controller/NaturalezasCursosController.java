@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("/restful")
+@RequestMapping("/restful/NaturalezasCursos")
 public class NaturalezasCursosController {
     @Autowired
     private ICursosService serviceCursos;
